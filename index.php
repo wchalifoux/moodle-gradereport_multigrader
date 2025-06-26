@@ -162,27 +162,37 @@ if ($formsubmitted === "Yes") {
                     echo html_writer::tag('b',implode(' / ', [$categorylinks, $courselink, $coursereportlink]));
                     echo html_writer::end_tag('div');
                     
-                    //IDIOMA - disabled
-                    //$exportxlsurl = new moodle_url('/grade/export/xls/index.php', array('id' => $thiscourse->id));
-                    $xlsicon = html_writer::img($CFG->wwwroot . '/grade/report/multigrader/pix/excel.gif',
-                            get_string('xls:view', 'gradeexport_xls'));
-                    //IDIOMA - disabled
-                    //echo html_writer::div(html_writer::link($exportxlsurl, $xlsicon), 'export_padding');
-                    $exportodsurl = new moodle_url('/grade/export/ods/index.php', array('id' => $thiscourse->id));
-                    $odsicon = html_writer::img($CFG->wwwroot . '/grade/report/multigrader/pix/ods.gif',
-                            get_string('ods:view', 'gradeexport_ods'));
-                    //IDIOMA - disabled
-                    //echo html_writer::div(html_writer::link($exportodsurl, $odsicon), 'export_padding');
-                    $exportxmlurl = new moodle_url('/grade/export/xml/index.php', array('id' => $thiscourse->id));
-                    $xmlicon = html_writer::img($CFG->wwwroot . '/grade/report/multigrader/pix/xml.gif',
-                            get_string('xml:view', 'gradeexport_xml'));
-                    //IDIOMA - disabled
-                    //echo html_writer::div(html_writer::link($exportxmlurl, $xmlicon), 'export_padding');
-                    $exporttxturl = new moodle_url('/grade/export/txt/index.php', array('id' => $thiscourse->id));
-                    $txticon = html_writer::img($CFG->wwwroot . '/grade/report/multigrader/pix/text.gif',
-                            get_string('txt:view', 'gradeexport_txt'));
-                    //IDIOMA - disabled
-                    //echo html_writer::div(html_writer::link($exporttxturl, $txticon), 'export_padding');
+                    // Excel export
+                    if (!empty($CFG->grade_multigrader_enablexls)) {
+                        $exportxlsurl = new moodle_url('/grade/export/xls/index.php', array('id' => $thiscourse->id));
+                        $xlsicon = html_writer::img($CFG->wwwroot . '/grade/report/multigrader/pix/excel.gif',
+                                get_string('xls:view', 'gradeexport_xls'));
+                        echo html_writer::div(html_writer::link($exportxlsurl, $xlsicon), 'export_padding');
+                    }
+                    
+                    // OpenDocument export
+                    if (!empty($CFG->grade_multigrader_enableods)) {
+                        $exportodsurl = new moodle_url('/grade/export/ods/index.php', array('id' => $thiscourse->id));
+                        $odsicon = html_writer::img($CFG->wwwroot . '/grade/report/multigrader/pix/ods.gif',
+                                get_string('ods:view', 'gradeexport_ods'));
+                        echo html_writer::div(html_writer::link($exportodsurl, $odsicon), 'export_padding');
+                    }
+                    
+                    // XML export
+                    if (!empty($CFG->grade_multigrader_enablexml)) {
+                        $exportxmlurl = new moodle_url('/grade/export/xml/index.php', array('id' => $thiscourse->id));
+                        $xmlicon = html_writer::img($CFG->wwwroot . '/grade/report/multigrader/pix/xml.gif',
+                                get_string('xml:view', 'gradeexport_xml'));
+                        echo html_writer::div(html_writer::link($exportxmlurl, $xmlicon), 'export_padding');
+                    }
+                    
+                    // Text export
+                    if (!empty($CFG->grade_multigrader_enabletxt)) {
+                        $exporttxturl = new moodle_url('/grade/export/txt/index.php', array('id' => $thiscourse->id));
+                        $txticon = html_writer::img($CFG->wwwroot . '/grade/report/multigrader/pix/text.gif',
+                                get_string('txt:view', 'gradeexport_txt'));
+                        echo html_writer::div(html_writer::link($exporttxturl, $txticon), 'export_padding');
+                    }
 
                     $gpr = new grade_plugin_return(array('type' => 'report', 'plugin' => 'multigrader', 'courseid' => $courseid, 'page' => $page));
                     // Basic access checks.

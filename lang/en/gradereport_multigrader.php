@@ -32,3 +32,7 @@ $string['multigrader:view'] = 'View the multi grader report';
 $string['pluginname'] = 'Multi Grader report';
 $string['preferences'] = 'Multi Grader report preferences';
 $string['gradereport_multigrader'] = 'Multi Grader report';
+$string['exportformats'] = 'Export options';
+$string['exportformats_desc'] = 'Select available export file formats';
+$string['enableexport'] = 'Enable {$a} export';
+$string['enableexport_desc'] = 'Enable {$a} export format.';

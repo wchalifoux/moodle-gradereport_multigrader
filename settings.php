@@ -32,4 +32,25 @@ if ($ADMIN->fulltree) {
 
     $settings->add(new admin_setting_configcheckbox('grade_multigrader_showuserimage', get_string('showuserimage', 'grades'),
                                                 get_string('showuserimage_help', 'grades'), 0));
+
+    // Export format settings
+    $settings->add(new admin_setting_heading('grade_multigrader_exportformats', 
+            get_string('exportformats', 'gradereport_multigrader'),
+            get_string('exportformats_desc', 'gradereport_multigrader')));
+
+    $settings->add(new admin_setting_configcheckbox('grade_multigrader_enablexls', 
+            get_string('enableexport', 'gradereport_multigrader', 'XLSX'),
+            get_string('enableexport_desc', 'gradereport_multigrader', get_string('pluginname', 'gradeexport_xls')), 0));
+
+    $settings->add(new admin_setting_configcheckbox('grade_multigrader_enableods', 
+            get_string('enableexport', 'gradereport_multigrader', 'ODS'),
+            get_string('enableexport_desc', 'gradereport_multigrader', get_string('pluginname', 'gradeexport_ods')), 0));
+
+    $settings->add(new admin_setting_configcheckbox('grade_multigrader_enablexml', 
+            get_string('enableexport', 'gradereport_multigrader', 'XML'),
+            get_string('enableexport_desc', 'gradereport_multigrader', get_string('pluginname', 'gradeexport_xml')), 0));
+
+    $settings->add(new admin_setting_configcheckbox('grade_multigrader_enabletxt', 
+            get_string('enableexport', 'gradereport_multigrader', 'TXT'),
+            get_string('enableexport_desc', 'gradereport_multigrader', get_string('pluginname', 'gradeexport_txt')), 0));
 }
