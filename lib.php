@@ -396,7 +396,9 @@ class grade_report_multigrader extends grade_report {
         list($enrolledsql, $enrolledparams) = get_enrolled_sql($this->context);
 
         // Fields we need from the user table.
-        $userfields = user_picture::fields('u', get_extra_user_fields($this->context));
+        $userfieldsapi = \core_user\fields::for_userpic()->with_identity($this->context, false);
+        $userfieldsql = $userfieldsapi->get_sql('u', false, '', '', false);
+        $userfields = $userfieldsql->selects;
 
         // We want to query both the current context and parent contexts.
         list($relatedctxsql, $relatedctxparams) = $DB->get_in_or_equal($this->context->get_parent_context_ids(true), SQL_PARAMS_NAMED, 'relatedctx');
@@ -404,7 +406,7 @@ class grade_report_multigrader extends grade_report {
         // If the user has clicked one of the sort asc/desc arrows.
         if (is_numeric($this->sortitemid)) {
             $params = array_merge(array('gitemid' => $this->sortitemid), $gradebookrolesparams, $this->userwheresql_params,
-                    $this->groupwheresql_params, $enrolledparams, $relatedctxparams);
+                    $this->groupwheresql_params, $enrolledparams, $relatedctxparams, $userfieldsql->params);
 
             $sortjoin = "LEFT JOIN {grade_grades} g ON g.userid = u.id AND g.itemid = $this->sortitemid";
             $sort = "g.finalgrade $this->sortorder";
@@ -426,7 +428,7 @@ class grade_report_multigrader extends grade_report {
                     break;
             }
 
-            $params = array_merge($gradebookrolesparams, $this->userwheresql_params, $this->groupwheresql_params, $enrolledparams, $relatedctxparams);
+            $params = array_merge($gradebookrolesparams, $this->userwheresql_params, $this->groupwheresql_params, $enrolledparams, $relatedctxparams, $userfieldsql->params);
         }
 
         $sql = "SELECT $userfields
@@ -434,6 +436,7 @@ class grade_report_multigrader extends grade_report {
                   JOIN ($enrolledsql) je ON je.id = u.id
                        $this->groupsql
                        $sortjoin
+                       {$userfieldsql->joins}
                   JOIN (
                            SELECT DISTINCT ra.userid
                              FROM {role_assignments} ra
@@ -567,9 +570,9 @@ class grade_report_multigrader extends grade_report {
         $showuserimage = $CFG->grade_multigrader_showuserimage; //IDIOMA
 
         $strfeedback = $this->get_lang_string("feedback");
-        $strgrade = $this->get_lang_string('grade');
+        $strgrade = get_string('grade', 'grades');
 
-        $extrafields = get_extra_user_fields($this->context);
+        $extrafields = \core_user\fields::for_identity($this->context, false)->get_required_fields();
 
         $arrows = $this->get_sort_arrows($extrafields);
 
@@ -695,7 +698,7 @@ class grade_report_multigrader extends grade_report {
         $numusers = count($this->users);
         $gradetabindex = 1;
         $columnstounset = array();
-        $strgrade = $this->get_lang_string('grade');
+        $strgrade = get_string('grade', 'grades');
         $strfeedback = $this->get_lang_string("feedback");
         $arrows = $this->get_sort_arrows();
 
@@ -1455,7 +1458,7 @@ class grade_report_multigrader extends grade_report {
         }
 
         foreach ($extrafields as $field) {
-            $fieldlink =  get_user_field_name($field);
+            $fieldlink = \core_user\fields::get_display_name($field);
             $arrows[$field] = $fieldlink;
 
             if ($field == $this->sortitemid) {
@@ -1528,4 +1531,3 @@ class grade_report_multigrader extends grade_report {
     }
 
 }
-
