@@ -71,6 +71,18 @@ class grade_report_multigrader extends grade_report {
     public $userselectparams = array();
 
     /**
+     * Array of users displayed in the report
+     * @var array $users
+     */
+    public $users = array();
+
+    /**
+     * The bound params for userselect (alternative name for backward compatibility)
+     * @var array $userselect_params
+     */
+    public $userselect_params = array();
+
+    /**
      * List of collapsed categories from user preference
      * @var array $collapsed
      */
@@ -569,9 +581,6 @@ class grade_report_multigrader extends grade_report {
         //$showuserimage = $this->get_pref('showuserimage');
         $showuserimage = $CFG->grade_multigrader_showuserimage; //IDIOMA
 
-        $strfeedback = $this->get_lang_string("feedback");
-        $strgrade = get_string('grade', 'grades');
-
         $extrafields = \core_user\fields::for_identity($this->context, false)->get_required_fields();
 
         $arrows = $this->get_sort_arrows($extrafields);
@@ -690,17 +699,12 @@ class grade_report_multigrader extends grade_report {
      * @return array Array of html_table_row objects
      */
     public function get_right_rows() {
-        global $CFG, $USER, $OUTPUT, $DB, $PAGE;
+        global $CFG, $DB;
 
         $rows = array();
         $this->rowcount = 0;
-        $numrows = count($this->gtree->get_levels());
         $numusers = count($this->users);
         $gradetabindex = 1;
-        $columnstounset = array();
-        $strgrade = get_string('grade', 'grades');
-        $strfeedback = $this->get_lang_string("feedback");
-        $arrows = $this->get_sort_arrows();
 
         foreach ($this->gtree->get_levels() as $key => $row) {
             if ($key == 0) {
@@ -763,17 +767,8 @@ class grade_report_multigrader extends grade_report {
                     //$itemmodule = $element['object']->itemmodule;
                     //$iteminstance = $element['object']->iteminstance;
 
-                    if ($element['object']->id == $this->sortitemid) {
-                        if ($this->sortorder == 'ASC') {
-                            $arrow = $this->get_sort_arrow('up', $sortlink);
-                        } else {
-                            $arrow = $this->get_sort_arrow('down', $sortlink);
-                        }
-                    } else {
-                        $arrow = $this->get_sort_arrow('move', $sortlink);
-                    }
-
-                    $headerlink = $this->gtree->get_element_header($element, true, $this->get_pref('showactivityicons'), false);
+                    $showactivityicons = (bool)$this->get_pref('showactivityicons');
+                    $headerlink = grade_helper::get_element_header($element, true, $showactivityicons, false);
 
                     $itemcell = new html_table_cell();
                     $itemcell->attributes['class'] = $type . ' ' . $catlevel . ' highlightable';
@@ -993,8 +988,6 @@ class grade_report_multigrader extends grade_report {
      * @return array Array of rows for the left part of the report
      */
     public function get_left_range_row($rows = array(), $colspan = 1) {
-        global $CFG, $USER;
-
         if ($this->get_pref('showranges')) {
             $rangerow = new html_table_row();
             $rangerow->attributes['class'] = 'range r' . $this->rowcount++;
@@ -1003,7 +996,7 @@ class grade_report_multigrader extends grade_report {
             $rangecell->colspan = $colspan;
             $rangecell->header = true;
             $rangecell->scope = 'row';
-            $rangecell->text = $this->get_lang_string('range', 'grades');
+            $rangecell->text = get_string('range', 'grades');
             $rangerow->cells[] = $rangecell;
             $rows[] = $rangerow;
         }
@@ -1339,9 +1332,9 @@ class grade_report_multigrader extends grade_report {
         // If object is a category, display expand/contract icon
         if ($element['type'] == 'category') {
             // Load language strings
-            $strswitchminus = $this->get_lang_string('aggregatesonly', 'grades');
-            $strswitchplus = $this->get_lang_string('gradesonly', 'grades');
-            $strswitchwhole = $this->get_lang_string('fullmode', 'grades');
+            $strswitchminus = get_string('aggregatesonly', 'grades');
+            $strswitchplus = get_string('gradesonly', 'grades');
+            $strswitchwhole = get_string('fullmode', 'grades');
 
             $url = new moodle_url($this->gpr->get_return_url(null, array('target' => $element['eid'], 'sesskey' => sesskey())));
 
@@ -1426,13 +1419,10 @@ class grade_report_multigrader extends grade_report {
      * @return array An associative array of HTML sorting links+arrows
      */
     public function get_sort_arrows(array $extrafields = array()) {
-        global $OUTPUT;
         $arrows = array();
 
-        $strsortasc = $this->get_lang_string('sortasc', 'grades');
-        $strsortdesc = $this->get_lang_string('sortdesc', 'grades');
-        $strfirstname = $this->get_lang_string('firstname');
-        $strlastname = $this->get_lang_string('lastname');
+        $strfirstname = get_string('firstname');
+        $strlastname = get_string('lastname');
 
         $firstlink = $strfirstname;
         $lastlink = $strlastname;

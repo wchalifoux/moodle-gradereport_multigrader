@@ -24,8 +24,8 @@
  */
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2025062600;        // The current plugin version (Date: YYYYMMDDXX)
+$plugin->version = 2025101604;        // The current plugin version (Date: YYYYMMDDXX)
 $plugin->requires = 2021051700;        // Requires Moodle 3.11 or later.
 $plugin->component = 'gradereport_multigrader'; // Full name of the plugin (used for diagnostics)
 $plugin->maturity  = MATURITY_BETA;
-$plugin->release   = '0.9.6';
+$plugin->release   = '0.9.8';

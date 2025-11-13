@@ -36,3 +36,9 @@ $string['exportformats'] = 'Export options';
 $string['exportformats_desc'] = 'Select available export file formats';
 $string['enableexport'] = 'Enable {$a} export';
 $string['enableexport_desc'] = 'Enable {$a} export format.';
+
+// Settings.
+$string['settings:studentsperpage'] = 'Students per page';
+$string['settings:studentsperpage_help'] = 'Number of students to display per page in the multi grader report.';
+$string['settings:showuserimage'] = 'Show user image';
+$string['settings:showuserimage_help'] = 'Display user profile images in the multi grader report.';
